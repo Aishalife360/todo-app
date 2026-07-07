@@ -16,6 +16,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
+  const [infoMessage, setInfoMessage] = useState<string | null>(null);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -24,9 +25,14 @@ export default function RegisterPage() {
       return;
     }
     setFormError(null);
+    setInfoMessage(null);
     const result = await dispatch(signUp({ email, password }));
     if (signUp.fulfilled.match(result)) {
-      navigate('/');
+      if (result.payload.session) {
+        navigate('/');
+      } else {
+        setInfoMessage('Account created. Check your email to confirm it, then log in.');
+      }
     }
   };
 
@@ -37,6 +43,7 @@ export default function RegisterPage() {
         submitLabel="Register"
         onSubmit={handleSubmit}
         error={formError ?? authError}
+        info={infoMessage}
         submitting={status === 'loading'}
         footer={
           <p className="text-sm text-text-muted">

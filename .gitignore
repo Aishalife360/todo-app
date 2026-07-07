@@ -15,6 +15,12 @@ dist-ssr
 # Claude Code local session data
 .claude
 
+# Local test/browser-automation artifacts (root-level only; keeps public/src assets trackable)
+.playwright-mcp
+/*.png
+/*.jpg
+/*.jpeg
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

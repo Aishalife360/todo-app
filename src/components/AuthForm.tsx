@@ -5,6 +5,7 @@ interface AuthFormProps {
   submitLabel: string;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   error?: string | null;
+  info?: string | null;
   submitting?: boolean;
   children: ReactNode;
   footer: ReactNode;
@@ -15,6 +16,7 @@ export default function AuthForm({
   submitLabel,
   onSubmit,
   error,
+  info,
   submitting,
   children,
   footer,
@@ -27,6 +29,7 @@ export default function AuthForm({
       <h2 className="text-3xl font-medium text-text-muted sm:text-4xl">{heading}</h2>
       <div className="flex w-full max-w-xl flex-col gap-5">{children}</div>
       {error && <p className="text-sm text-red-400">{error}</p>}
+      {info && <p className="text-sm text-accent">{info}</p>}
       {footer}
       <button
         type="submit"

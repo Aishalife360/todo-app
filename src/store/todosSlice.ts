@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { supabase } from '../lib/supabaseClient';
 import type { Todo, TodoFilter } from '../types/todo';
@@ -97,9 +97,14 @@ const todosSlice = createSlice({
 export const { filterChanged } = todosSlice.actions;
 export default todosSlice.reducer;
 
-export const selectVisibleTodos = (state: RootState): Todo[] => {
-  const { items, filter } = state.todos;
-  if (filter === 'active') return items.filter((todo) => !todo.completed);
-  if (filter === 'completed') return items.filter((todo) => todo.completed);
-  return items;
-};
+const selectTodoItems = (state: RootState) => state.todos.items;
+const selectTodoFilter = (state: RootState) => state.todos.filter;
+
+export const selectVisibleTodos = createSelector(
+  [selectTodoItems, selectTodoFilter],
+  (items, filter): Todo[] => {
+    if (filter === 'active') return items.filter((todo) => !todo.completed);
+    if (filter === 'completed') return items.filter((todo) => todo.completed);
+    return items;
+  },
+);
