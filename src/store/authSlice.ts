@@ -22,7 +22,9 @@ export const signUp = createAsyncThunk(
   async ({ email, password }: { email: string; password: string }) => {
     const { data, error } = await supabase.auth.signUp({ email, password });
     if (error) throw error;
-    return data.user;
+    // data.user can be non-null even when email confirmation is required and
+    // no session was created yet — status must key off the session, not the user.
+    return { user: data.user, session: data.session };
   },
 );
 
@@ -59,8 +61,8 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(signUp.fulfilled, (state, action) => {
-        state.user = action.payload;
-        state.status = action.payload ? 'authenticated' : 'unauthenticated';
+        state.user = action.payload.session ? action.payload.user : null;
+        state.status = action.payload.session ? 'authenticated' : 'unauthenticated';
       })
       .addCase(signUp.rejected, (state, action) => {
         state.status = 'unauthenticated';
