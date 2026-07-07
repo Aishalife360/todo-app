@@ -45,17 +45,19 @@ export default function TodoPage() {
           Sign out
         </button>
       </div>
-      {todosStatus === 'loading' ? (
-        <p className="px-6 py-10 text-center text-text-muted sm:px-8">
-          Loading todos…
-        </p>
-      ) : (
-        <TodoList
-          todos={todos}
-          onToggle={(id, completed) => dispatch(toggleTodo({ id, completed }))}
-          onDelete={(id) => dispatch(deleteTodo(id))}
-        />
-      )}
+      <div className="flex-1 overflow-y-auto">
+        {todosStatus === 'loading' ? (
+          <p className="px-6 py-10 text-center text-text-muted sm:px-8">
+            Loading todos…
+          </p>
+        ) : (
+          <TodoList
+            todos={todos}
+            onToggle={(id, completed) => dispatch(toggleTodo({ id, completed }))}
+            onDelete={(id) => dispatch(deleteTodo(id))}
+          />
+        )}
+      </div>
       <AddTodoBar onAdd={handleAdd} />
     </AppCard>
   );

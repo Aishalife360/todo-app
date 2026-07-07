@@ -24,7 +24,7 @@ export default function AuthForm({
   return (
     <form
       onSubmit={onSubmit}
-      className="flex flex-col items-center gap-6 px-6 py-14 sm:px-8 sm:py-16"
+      className="flex flex-1 flex-col items-center justify-center gap-6 px-6 py-14 sm:px-8 sm:py-16"
     >
       <h2 className="text-3xl font-medium text-text-muted sm:text-4xl">{heading}</h2>
       <div className="flex w-full max-w-xl flex-col gap-5">{children}</div>
