@@ -28,6 +28,13 @@ export const signUp = createAsyncThunk(
       options: { emailRedirectTo: `${window.location.origin}/login` },
     });
     if (error) throw error;
+    // Supabase avoids user-enumeration by returning success (no error) for a
+    // duplicate signup when email confirmation is on; an empty identities
+    // array on the returned user is the documented signal that the email
+    // is already registered.
+    if (data.user && data.user.identities?.length === 0) {
+      throw new Error('An account with this email already exists. Please log in instead.');
+    }
     // data.user can be non-null even when email confirmation is required and
     // no session was created yet — status must key off the session, not the user.
     return { user: data.user, session: data.session };
