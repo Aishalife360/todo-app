@@ -9,18 +9,24 @@ interface AuthState {
   user: User | null;
   status: AuthStatus;
   error: string | null;
+  confirmationMessage: string | null;
 }
 
 const initialState: AuthState = {
   user: null,
   status: 'idle',
   error: null,
+  confirmationMessage: null,
 };
 
 export const signUp = createAsyncThunk(
   'auth/signUp',
   async ({ email, password }: { email: string; password: string }) => {
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: `${window.location.origin}/login` },
+    });
     if (error) throw error;
     // data.user can be non-null even when email confirmation is required and
     // no session was created yet — status must key off the session, not the user.
@@ -52,6 +58,12 @@ const authSlice = createSlice({
     sessionRestored(state, action: PayloadAction<Session | null>) {
       state.user = action.payload?.user ?? null;
       state.status = action.payload ? 'authenticated' : 'unauthenticated';
+    },
+    emailConfirmed(state) {
+      state.confirmationMessage = 'Email confirmed! Please log in.';
+    },
+    confirmationMessageCleared(state) {
+      state.confirmationMessage = null;
     },
   },
   extraReducers: (builder) => {
@@ -87,5 +99,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { sessionRestored } = authSlice.actions;
+export const { sessionRestored, emailConfirmed, confirmationMessageCleared } =
+  authSlice.actions;
 export default authSlice.reducer;

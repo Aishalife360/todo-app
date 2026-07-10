@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AppCard from '../components/AppCard';
 import AuthForm from '../components/AuthForm';
 import AuthInput from '../components/AuthInput';
-import { signIn } from '../store/authSlice';
+import { confirmationMessageCleared, signIn } from '../store/authSlice';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 
 export default function LoginPage() {
@@ -12,8 +12,15 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const error = useAppSelector((state) => state.auth.error);
   const status = useAppSelector((state) => state.auth.status);
+  const confirmationMessage = useAppSelector((state) => state.auth.confirmationMessage);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  useEffect(() => {
+    return () => {
+      dispatch(confirmationMessageCleared());
+    };
+  }, [dispatch]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -30,6 +37,7 @@ export default function LoginPage() {
         submitLabel="Login"
         onSubmit={handleSubmit}
         error={error}
+        info={confirmationMessage}
         submitting={status === 'loading'}
         footer={
           <p className="text-sm text-text-muted">
